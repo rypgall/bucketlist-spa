@@ -1,11 +1,57 @@
 // Load items
-let items = JSON.parse(localStorage.getItem("bucketItems")) || [];
+let items = [];
 let editingId = null;
 
-// Save to storage
-function saveItems() {
-localStorage.setItem("bucketItems", JSON.stringify(items));
+async function loadItems() {
+  items = [];
+  const querySnapshot = await getDocs(coll(db, "bucketlist"));
+  querySnapshot.forEach((d) => {
+    items.push({ id: d.id, ...d.data() });
+  });
+  renderItems();
 }
+
+async function saveItemToDB(item) {
+  await addDoc(coll(db, "bucketlist"), item);
+}
+
+async function updateItemInDB(id, data) {
+  await updateDoc(docRef(db, "bucketlist", id), data);
+}
+
+async function deleteItemInDB(id) {
+  await deleteDoc(docRef(db, "bucketlist", id));
+}
+/*
+// Load items from Firestore
+async function loadItems() {
+  items = [];
+  const querySnapshot = await getDocs(collection(db, "bucketlist"));
+  querySnapshot.forEach((d) => {
+    items.push({ id: d.id, ...d.data() });
+  });
+  renderItems();
+}
+
+// Save new item
+async function saveItemToDB(item) {
+  await addDoc(collection(db, "bucketlist"), item);
+}
+
+// Update item
+async function updateItemInDB(id, data) {
+  await updateDoc(doc(db, "bucketlist", id), data);
+}
+
+// Delete item
+async function deleteItemInDB(id) {
+  await deleteDoc(doc(db, "bucketlist", id));
+}
+
+*/
+
+
+
 
 // Elements
 const listSection = document.getElementById("listSection");
@@ -52,27 +98,25 @@ categoryInput.value = "";
 }
 
 // Handle Save (add or edit)
-saveBtn.addEventListener("click", () => {
-const data = {
-title: titleInput.value,
-desc: descInput.value,
-image: imageInput.value,
-location: locationInput.value,
-link: linkInput.value,
-category: categoryInput.value.toLowerCase(),
-completed: false
-};
+saveBtn.addEventListener("click", async () => {
+  const data = {
+    title: titleInput.value,
+    desc: descInput.value,
+    image: imageInput.value,
+    location: locationInput.value,
+    link: linkInput.value,
+    category: categoryInput.value.toLowerCase(),
+    completed: false
+  };
 
-if (editingId) {
-const index = items.findIndex(item => item.id === editingId);
-items[index] = { ...items[index], ...data };
-} else {
-items.push({ id: Date.now(), ...data });
-}
+  if (editingId) {
+    await updateItemInDB(editingId, data);
+  } else {
+    await saveItemToDB(data);
+  }
 
-saveItems();
-renderItems();
-closeModal();
+  await loadItems();
+  closeModal();
 });
 
 // Cancel modal
@@ -115,10 +159,9 @@ card.innerHTML =
   '<button class="delete-btn">Delete</button>';
 
 // Complete
-card.querySelector(".complete-btn").addEventListener("click", () => {
-  item.completed = !item.completed;
-  saveItems();
-  renderItems(filterText);
+card.querySelector(".complete-btn").addEventListener("click", async () => {
+  await updateItemInDB(item.id, { completed: !item.completed });
+  await loadItems();
 });
 
 // Edit
@@ -135,10 +178,9 @@ card.querySelector(".edit-btn").addEventListener("click", () => {
 });
 
 // Delete
-card.querySelector(".delete-btn").addEventListener("click", () => {
-  items = items.filter(x => x.id !== item.id);
-  saveItems();
-  renderItems(filterText);
+card.querySelector(".delete-btn").addEventListener("click", async () => {
+  await deleteItemInDB(item.id);
+  await loadItems();
 });
 
 listSection.appendChild(card);
@@ -151,4 +193,4 @@ renderItems(e.target.value);
 });
 
 // Initial render
-renderItems();
+loadItems();

@@ -6,7 +6,25 @@
 <title>Bucket List</title>
 <link rel="stylesheet" href="styles.css" />
 </head>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
 
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCUcBflGxW9QOtS_NrFSq9mq4N9gER8JrQ",
+    authDomain: "bucketlist-spa.firebaseapp.com",
+    projectId: "bucketlist-spa",
+    storageBucket: "bucketlist-spa.firebasestorage.app",
+    messagingSenderId: "317982123038",
+    appId: "1:317982123038:web:08d8685a475fcd8eb0ba0f"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+</script>
 <body>
 
 <nav class="navbar">
