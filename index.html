@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bucket List</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+<nav class="navbar">
+<h1 class="logo">My Bucket List</h1>
+<input id="searchInput" type="text" placeholder="Search..." />
+</nav>
+
+<section id="listSection" class="card-grid"></section>
+
+<button id="addFloatingBtn" class="floating-btn">+</button>
+
+<div id="modalOverlay" class="modal-overlay hidden">
+    <div class="modal">
+        <h2 id="modalTitle">Add Item</h2>
+
+        <input id="titleInput" placeholder="Title" />
+        <textarea id="descInput" placeholder="Description"></textarea>
+        <input id="imageInput" placeholder="Image URL" />
+        <input id="locationInput" placeholder="Location / Geo info" />
+        <input id="linkInput" placeholder="Link" />
+        <input id="categoryInput" placeholder="Category (e.g., travel, food, hobby)" />
+        <div class="modal-actions">
+            <button id="saveBtn">Save</button>
+            <button id="cancelBtn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
